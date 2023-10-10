@@ -1,37 +1,73 @@
+#this file consists of code for instances and sg
+provider "aws" {
+region = "eu-west-2"
+}
 
+resource "aws_instance" "one" {
+  ami             = "ami-0b2287cff5d6be10f"
+  instance_type   = "t2.micro"
+  key_name        = "ll"
+  vpc_security_group_ids = [aws_security_group.five.id]
+  availability_zone = "eu-west-2a"
+  user_data       = <<EOF
+#!/bin/bash
+sudo -i
+yum install httpd -y
+systemctl start httpd
+chkconfig httpd on
+echo "hai all this is my app created by terraform infrastructurte by raham sir server-1" > /var/www/html/index.html
+EOF
+  tags = {
+    Name = "web-server-1"
+  }
+}
 
-Total download size: 24 M
-Installed size: 77 M
-Downloading packages:
-warning: /var/cache/yum/x86_64/2/hashicorp/packages/terraform-1.6.0-1.x86_64.rpm: Header V4 RSA/SHA256 Signature, key ID a621e701: NOKEY
-Public key for terraform-1.6.0-1.x86_64.rpm is not installed
-terraform-1.6.0-1.x86_64.rpm                                                                                                           |  24 MB  00:00:00
-Retrieving key from https://rpm.releases.hashicorp.com/gpg
-Importing GPG key 0xA621E701:
- Userid     : "HashiCorp Security (HashiCorp Package Signing) <security+packaging@hashicorp.com>"
- Fingerprint: 798a ec65 4e5c 1542 8c8e 42ee aa16 fcbc a621 e701
- From       : https://rpm.releases.hashicorp.com/gpg
-Running transaction check
-Running transaction test
-Transaction test succeeded
-Running transaction
-  Verifying  : terraform-1.6.0-1.x86_64                                                                                                                   1/1
+resource "aws_instance" "two" {
+  ami             = "ami-0b2287cff5d6be10f"
+  instance_type   = "t2.micro"
+  key_name        = "ll"
+  vpc_security_group_ids = [aws_security_group.five.id]
+  availability_zone = "eu-west-2b"
+  user_data       = <<EOF
+#!/bin/bash
+sudo -i
+yum install httpd -y
+systemctl start httpd
+chkconfig httpd on
+echo "hai all this is my website created by terraform infrastructurte by raham sir server-2" > /var/www/html/index.html
+EOF
+  tags = {
+    Name = "web-server-2"
+  }
+}
+resource "aws_instance" "three" {
+  ami             = "ami-0b2287cff5d6be10f"
+  instance_type   = "t2.micro"
+  key_name        = "ll"
+  vpc_security_group_ids = [aws_security_group.five.id]
+  availability_zone = "eu-west-2a"
+  tags = {
+    Name = "app-server-1"
+  }
+}
 
-Installed:
-  terraform.x86_64 0:1.6.0-1
+resource "aws_instance" "four" {
+  ami             = "ami-0b2287cff5d6be10f"
+  instance_type   = "t2.micro"
+  key_name        = "ll"
+  vpc_security_group_ids = [aws_security_group.five.id]
+  availability_zone = "eu-west-2b"
+  tags = {
+    Name = "app-server-2"
+  }
+}
 
-Complete!
-[root@ip-172-31-16-198 ~]# aws configure
-AWS Access Key ID [None]: AKIAQ56ZCQUCXLT56NV3
-AWS Secret Access Key [None]: 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
-Default region name [None]: eu-west-2
-Default output format [None]: table
-[root@ip-172-31-16-198 ~]# terraform init
-Terraform initialized in an empty directory!
-
-The directory has no Terraform configuration files. You may begin working
-with Terraform immediately by creating Terraform configuration files.
-[root@ip-172-31-16-198 ~]# vim main.tf
+resource "aws_security_group" "five" {
+  name = "elb-sg"
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -41,7 +77,6 @@ with Terraform immediately by creating Terraform configuration files.
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
   egress {
     from_port   = 0
     to_port     = 0
@@ -51,7 +86,7 @@ with Terraform immediately by creating Terraform configuration files.
 }
 
 resource "aws_s3_bucket" "six" {
-  bucket = "devopsbysubhashterraserverbucketoo99"
+  bucket = "devopsbyrahamterraserverbucketoo99"
 }
 
 resource "aws_iam_user" "seven" {
@@ -73,3 +108,5 @@ resource "aws_ebs_volume" "eight" {
   }
 }
 
+  
+  
